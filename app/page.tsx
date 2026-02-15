@@ -3,7 +3,6 @@
 import ProfileVisScroll from "@/components/ProfileVisScroll";
 import { profiles } from "@/data/profiles";
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 
 export default function Home() {
     const currentProfile = profiles[0];
@@ -40,7 +39,6 @@ export default function Home() {
     const [clickExplosions, setClickExplosions] = useState<{ id: number, x: number, y: number }[]>([]);
 
     // --- AUDIO ENGINE ---
-    // We use a ref to keep track of the main audio player to prevent overlap
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
     const playAudio = (filename: string, volume = 1.0) => {
@@ -66,26 +64,28 @@ export default function Home() {
 
     // 1. TOP RIGHT BUTTON (PRANK TRIGGER)
     const handleTopRightJoin = () => {
-        playAudio('gadbad', 1.0); // Starts the music
+        playAudio('joinnow', 1.0); // PLAY JOINNOW.MP3
         setIsPrankActive(true);
 
         // Sequence: 3 Second Delays
-        // Step 0: Warning (Immediate)
         setTimeout(() => setPrankStep(1), 3000); // IP
         setTimeout(() => setPrankStep(2), 6000); // Location
         setTimeout(() => setPrankStep(3), 9000); // Emails
         setTimeout(() => setPrankStep(4), 12000); // Final Popup
     };
 
-    // 2. PREMIUM BUTTONS (HEARTS + CHING)
-    const handlePremiumClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        playSfx('ching', 1.0);
+    // 2. PREMIUM BUTTONS (HEARTS + SOUND SELECTION)
+    const handlePremiumClick = (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
+        // Audio Logic
+        if (index === 2) {
+            playSfx('ching', 1.0); // 3rd Option
+        } else {
+            playSfx('select', 1.0); // 1st & 2nd Option
+        }
 
-        // Add a new explosion at click coordinates
+        // Heart Explosion Visual
         const newExplosion = { id: Date.now(), x: e.clientX, y: e.clientY };
         setClickExplosions(prev => [...prev, newExplosion]);
-
-        // Remove it after animation
         setTimeout(() => {
             setClickExplosions(prev => prev.filter(ex => ex.id !== newExplosion.id));
         }, 1000);
@@ -169,11 +169,14 @@ export default function Home() {
     const myPhotos = ["/my-photos/1.jpg", "/my-photos/2.jpg", "/my-photos/3.jpg", "/my-photos/4.jpg", "/my-photos/5.jpg"];
     const societyGirls = ["/girls/1.jpg", "/girls/2.jpg", "/girls/3.jpg"];
     const bioStats = [{ label: "Looks", value: 70 }, { label: "Skills", value: 90 }, { label: "Maturity", value: 30 }, { label: "Sincerity", value: 95 }, { label: "Earning", value: 5 }];
+
+    // UPDATED PREMIUM OFFERS
     const membershipPlans = [
-        { name: "Friend Zone", price: "Free", features: ["High fives", "Occasional memes", "No hand holding"], color: "bg-gray-100 border-gray-200" },
-        { name: "Bestie", price: "$5/mo", features: ["Late night talks", "Food sharing", "Relationship advice"], color: "bg-blue-50 border-blue-200" },
-        { name: "Girlfriend", price: "Your Soul", features: ["Unlimited cuddles", "Password sharing", "Hoodie theft"], color: "bg-gradient-to-b from-pink-50 to-[#E00A5F]/10 border-[#E00A5F]" },
+        { title: "Option A", text: "Whatsapp chat", price: "Free", color: "bg-green-50 border-green-200" },
+        { title: "Option B", text: "Only coffee with me [t*c apply]", price: "Bill Split", color: "bg-orange-50 border-orange-200" },
+        { title: "Option C", text: "Itna pyar se bol rehe ho to dono hi le leti hun", price: "Sold!", color: "bg-pink-50 border-pink-200" },
     ];
+
     const heartVariants = ['💖', '✨', '🌸', '💘', '💝'];
     const kissVariants = ['💋', '👄', '😽', '💋', '❤️'];
 
@@ -212,13 +215,13 @@ export default function Home() {
         }
         .hover-wobble:hover { animation: wobble 0.5s ease-in-out; }
         
-        /* Shake Once Animation */
+        /* Shake Once Animation - Little Shake */
         @keyframes shakeOnce {
           0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-          20%, 40%, 60%, 80% { transform: translateX(10px); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+          20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
-        .animate-shake-once { animation: shakeOnce 0.8s cubic-bezier(.36,.07,.19,.97) both; }
+        .animate-shake-once { animation: shakeOnce 0.6s cubic-bezier(.36,.07,.19,.97) both; }
 
         /* Local Button Explosion */
         @keyframes burstOut {
@@ -236,7 +239,7 @@ export default function Home() {
             {!isPrankActive && (
                 <button
                     onClick={handleTopRightJoin}
-                    className="fixed top-6 right-6 z-[80] bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 text-white font-black uppercase tracking-widest px-8 py-3 rounded-full shadow-[0_0_20px_rgba(234,179,8,0.6)] border-2 border-white/50 animate-pulse hover:scale-110 transition-transform duration-300"
+                    className="fixed top-6 right-6 z-[80] bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-300 text-white font-black uppercase tracking-widest px-8 py-3 rounded-full shadow-[0_0_20px_rgba(234,179,8,0.8)] border-2 border-white/80 animate-pulse hover:scale-110 transition-transform duration-300 ring-4 ring-yellow-400/30"
                 >
                     Join Now
                 </button>
@@ -410,7 +413,7 @@ export default function Home() {
                                     <div className="flex gap-8 animate-infinite-scroll pl-6">
                                         {[...myPhotos, ...myPhotos].map((src, index) => (
                                             <div key={index} className="relative w-64 h-80 flex-shrink-0 rounded-[2.5rem] overflow-hidden shadow-[0_0_0_4px_rgba(255,255,255,0.15),_0_0_20px_rgba(253,224,71,0.2),_0_15px_30px_rgba(0,0,0,0.3)] transform transition-all hover:scale-105 duration-500">
-                                                <Image src={src} alt={`Profile ${index}`} fill className="object-cover" />
+                                                <img src={src} alt={`Profile ${index}`} className="w-full h-full object-cover" />
                                             </div>
                                         ))}
                                     </div>
@@ -457,15 +460,23 @@ export default function Home() {
                             {/* C. MY STORY SECTION */}
                             <div className="space-y-6 w-full px-2 md:px-6">
 
-                                <div className="flex flex-col items-center gap-4">
+                                <div className="flex flex-col items-center gap-6">
                                     <div className="p-[3px] rounded-full bg-gradient-to-r from-[#FDE047] via-[#FDE047] to-[#E00A5F] shadow-[0_0_25px_rgba(253,224,71,0.4)]">
                                         <div className="bg-[#a60042]/60 backdrop-blur-md px-10 py-3 rounded-full flex items-center justify-center">
                                             <span className="text-white font-cinzel font-bold text-xl tracking-[0.25em] uppercase drop-shadow-sm">My Story</span>
                                         </div>
                                     </div>
 
-                                    <div className="bg-[#FDE047] text-[#E00A5F] px-4 py-2 rounded-lg shadow-lg transform -rotate-1 border-2 border-white animate-pulse">
-                                        <p className="text-sm font-bold tracking-wide">💡 Interactive Mode: Hover over words to reveal magic!</p>
+                                    {/* --- ENHANCED NOTE SECTION --- */}
+                                    <div className="w-full max-w-2xl text-center transform hover:scale-105 transition-transform duration-300">
+                                        <div className="bg-yellow-300 border-4 border-red-600 shadow-[0_10px_0_rgba(220,38,38,1)] rounded-xl px-6 py-4 animate-[pulse_3s_infinite]">
+                                            <p className="text-2xl md:text-3xl font-black text-red-600 uppercase tracking-widest drop-shadow-sm">
+                                                ⚠️ INTERACTIVE MODE ⚠️
+                                            </p>
+                                            <p className="text-red-800 font-bold mt-1 text-lg">
+                                                Hover over hidden words to reveal magic!
+                                            </p>
+                                        </div>
                                     </div>
 
                                     <div className="h-16 w-1 bg-gradient-to-b from-[#FDE047] to-white/20 rounded-full"></div>
@@ -477,20 +488,20 @@ export default function Home() {
                                         <div className="mt-8 text-center w-full max-w-4xl mx-auto space-y-12">
 
                                             <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed">
-                                                &quot;Before I entered this college, I think I was a{' '}
-                                                <span className="relative inline-block cursor-pointer text-[#E00A5F] font-bold hover:scale-110 transition-transform duration-200" onMouseEnter={() => playAudio('kid', 0.6)}>kid</span>.&quot;
+                                                "Before I entered this college, I think I was a{' '}
+                                                <span className="relative inline-block cursor-pointer text-[#E00A5F] font-bold hover:scale-110 transition-transform duration-200" onMouseEnter={() => playAudio('kid', 0.6)}>kid</span>."
                                             </p>
                                             <p className="text-3xl md:text-4xl text-gray-600 font-cinzel leading-relaxed">
-                                                &quot;I did not talk to girls and <span className="italic text-gray-400">here is no girls</span> to talk.&quot;
+                                                "I did not talk to girls and <span className="italic text-gray-400">here is no girls</span> to talk."
                                             </p>
                                             <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed">
-                                                &quot;Oh, I just forgot to tell you about <span className="text-[#E00A5F] font-bold">society girls</span>.&quot;
+                                                "Oh, I just forgot to tell you about <span className="text-[#E00A5F] font-bold">society girls</span>."
                                             </p>
 
                                             {/* Photos Interaction */}
                                             <div className="flex flex-col items-center gap-8 pt-8 pb-8 border-b-4 border-gray-200 w-full">
                                                 <p className="text-2xl md:text-3xl text-gray-800 font-cinzel font-bold">
-                                                    &quot;Here are some of the most beautiful girls...&quot;
+                                                    "Here are some of the most beautiful girls..."
                                                 </p>
 
                                                 <div className="relative flex flex-col items-center w-full max-w-2xl mt-4">
@@ -513,7 +524,7 @@ export default function Home() {
                                                                 <div className="flex justify-center gap-4 md:gap-8 animate-zoom-in">
                                                                     {societyGirls.map((img, index) => (
                                                                         <div key={index} className="relative w-28 h-28 md:w-40 md:h-40 rounded-2xl overflow-hidden border-4 border-white shadow-lg transition-all duration-500 hover:scale-110 hover:z-10 hover:rotate-3">
-                                                                            <Image src={img} alt="Girl" fill className="object-cover" onError={(e) => { /* Next.js Image doesn't have onError quite like img, handling differently or omitting for now */ }} />
+                                                                            <img src={img} alt="Girl" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = "https://placehold.co/400x400/E00A5F/white?text=Img+Err"; }} />
                                                                         </div>
                                                                     ))}
                                                                 </div>
@@ -524,29 +535,29 @@ export default function Home() {
                                             </div>
 
                                             <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed pt-4">
-                                                &quot;I know these are beautiful, so once I decided to talk to one of them but suddenly senior{' '}
-                                                <span className="inline-block cursor-help text-red-600 font-bold underline decoration-red-300 hover:animate-shake hover:text-red-700 transition-colors" onMouseEnter={() => playAudio('senior', 0.8)}>calls</span>.&quot;
+                                                "I know these are beautiful, so once I decided to talk to one of them but suddenly senior{' '}
+                                                <span className="inline-block cursor-help text-red-600 font-bold underline decoration-red-300 hover:animate-shake hover:text-red-700 transition-colors" onMouseEnter={() => playAudio('senior', 0.8)}>calls</span>."
                                             </p>
 
                                             <div className="pt-4">
                                                 <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed flex flex-col md:flex-row items-center justify-center gap-4 flex-wrap">
-                                                    <span>&quot;Then I found instagram (in love its insta) my second&quot;</span>
+                                                    <span>"Then I found instagram (in love its insta) my second"</span>
                                                     <span onClick={triggerCrushExplosion} className="relative cursor-pointer inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-pink-500 via-rose-400 to-[#FDE047] text-white font-bold tracking-wider uppercase shadow-[0_4px_15px_rgba(236,72,153,0.4)] border-2 border-white/50 hover:scale-110 hover:-rotate-2 hover:shadow-[0_0_30px_rgba(253,224,71,0.6)] active:scale-95 transition-all duration-300 ease-out group">
                                                         <span>Crush</span><span className="text-xl group-hover:animate-bounce">💖</span>
                                                     </span>
                                                 </p>
                                             </div>
 
-                                            <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed animate-fade-in-up">&quot;After some months I spend hours with insta we have a <span className="text-[#E00A5F] font-bold">great bonding</span>.&quot;</p>
-                                            <p className="text-3xl md:text-4xl text-gray-600 font-cinzel leading-relaxed">&quot;I keep watching her.&quot;</p>
-                                            <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed italic border-l-[6px] border-[#FDE047] pl-8 py-4 bg-yellow-50/50 rounded-r-2xl shadow-sm">&quot;Oh can&apos;t scroll without me, this is genuine problem every girl face.&quot;</p>
+                                            <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed animate-fade-in-up">"After some months I spend hours with insta we have a <span className="text-[#E00A5F] font-bold">great bonding</span>."</p>
+                                            <p className="text-3xl md:text-4xl text-gray-600 font-cinzel leading-relaxed">"I keep watching her."</p>
+                                            <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed italic border-l-[6px] border-[#FDE047] pl-8 py-4 bg-yellow-50/50 rounded-r-2xl shadow-sm">"Oh can't scroll without me, this is genuine problem every girl face."</p>
 
                                             {/* HEART LOCKET */}
                                             <div className="py-20 flex justify-center w-full min-h-[300px]">
                                                 <div className="relative w-64 h-64 flex items-center justify-center cursor-pointer" onClick={handleHeartBoxClick}>
                                                     <div className={`absolute inset-0 flex items-center justify-center transition-all duration-700 ${isHeartBroken ? 'zoom-reveal' : 'opacity-0 scale-0'}`}>
                                                         <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-[#FDE047] shadow-[0_0_50px_rgba(253,224,71,0.8)] bg-white z-10">
-                                                            <Image src="/girls/3.jpg" alt="Reveal" fill className="object-cover" />
+                                                            <img src="/girls/3.jpg" alt="Reveal" className="w-full h-full object-cover" />
                                                         </div>
                                                     </div>
                                                     <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_10px_20px_rgba(224,10,95,0.6)] overflow-visible">
@@ -571,12 +582,12 @@ export default function Home() {
 
                                                     <div className="bg-gradient-to-r from-pink-50 to-yellow-50 px-8 py-4 rounded-full border border-pink-100 shadow-sm">
                                                         <p className="text-xl text-[#E00A5F] font-cinzel font-medium text-center">
-                                                            &quot;Oh you look interested in me, lets find if our chemistry works&quot;
+                                                            "Oh you look interested in me, lets find if our chemistry works"
                                                         </p>
                                                     </div>
 
                                                     <h3 className="text-3xl md:text-5xl text-gray-800 font-cinzel font-bold text-center leading-tight drop-shadow-sm">
-                                                        &quot;Do you believe in <br /> <span className="text-[#E00A5F]">love at first sight?</span>&quot;
+                                                        "Do you believe in <br /> <span className="text-[#E00A5F]">love at first sight?</span>"
                                                     </h3>
 
                                                     {/* Choice Buttons */}
@@ -682,26 +693,23 @@ export default function Home() {
                                     {membershipPlans.map((plan, idx) => (
                                         <div
                                             key={idx}
-                                            className={`relative rounded-3xl p-8 border-2 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl overflow-hidden group ${plan.color} bg-white`}
+                                            className={`relative rounded-3xl p-6 border-2 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl overflow-hidden group ${plan.color} bg-white flex flex-col justify-between`}
                                         >
-                                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                                <span className="text-6xl">💎</span>
+                                            <div>
+                                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                                    <span className="text-6xl">💎</span>
+                                                </div>
+                                                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">{plan.title}</h4>
+                                                <p className="text-lg md:text-xl font-bold font-cinzel text-gray-800 mb-4 leading-snug">{plan.text}</p>
+                                                <p className="text-2xl font-black text-[#E00A5F] mb-4">{plan.price}</p>
                                             </div>
-                                            <h4 className="text-2xl font-bold font-cinzel text-gray-800 mb-2">{plan.name}</h4>
-                                            <p className="text-3xl font-black text-[#E00A5F] mb-6">{plan.price}</p>
-                                            <ul className="space-y-3">
-                                                {plan.features.map((feat, fIdx) => (
-                                                    <li key={fIdx} className="flex items-center gap-2 text-gray-600 text-sm font-medium">
-                                                        <span className="text-green-500">✓</span> {feat}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                            <div className="mt-6 pt-6 border-t border-gray-200/50">
+
+                                            <div className="mt-4 pt-4 border-t border-gray-200/50">
                                                 <button
-                                                    onClick={handlePremiumClick}
-                                                    className="w-full py-2 rounded-lg bg-black text-white font-bold text-xs uppercase tracking-widest hover:bg-[#E00A5F] active:scale-95 transition-all"
+                                                    onClick={(e) => handlePremiumClick(e, idx)}
+                                                    className="w-full py-3 rounded-lg bg-black text-white font-bold text-xs uppercase tracking-widest hover:bg-[#E00A5F] active:scale-95 transition-all shadow-md"
                                                 >
-                                                    Join Now
+                                                    Select
                                                 </button>
                                             </div>
                                         </div>
@@ -710,7 +718,7 @@ export default function Home() {
                             </div>
 
                             {/* E. REVIEW SECTION */}
-                            <div className="w-full max-w-2xl mx-auto px-6 pb-10">
+                            <div className="w-full max-w-2xl mx-auto px-6 pb-20">
                                 <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-xl relative overflow-hidden">
                                     <div className="text-center mb-8">
                                         <h3 className="text-2xl font-bold font-cinzel text-gray-800">Rate Your Experience</h3>
@@ -747,19 +755,6 @@ export default function Home() {
                             </div>
 
                         </div>
-
-                        {/* SEARCH FOOTER */}
-                        <div className="w-full max-w-2xl mx-auto px-6 pb-20 pt-4">
-                            <div className="relative flex items-center w-full h-16 rounded-full bg-white shadow-lg overflow-hidden focus-within:ring-4 focus-within:ring-[#FDE047] transition-all duration-300">
-                                <div className="grid place-items-center h-full w-16 text-gray-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                </div>
-                                <input className="peer h-full w-full outline-none text-lg text-gray-700 pr-2 placeholder-gray-400 font-cinzel" type="text" placeholder="Find your love..." />
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </div>
