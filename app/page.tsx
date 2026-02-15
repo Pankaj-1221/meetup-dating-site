@@ -2,7 +2,8 @@
 
 import ProfileVisScroll from "@/components/ProfileVisScroll";
 import { profiles } from "@/data/profiles";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
+import Image from "next/image";
 
 export default function Home() {
     const currentProfile = profiles[0];
@@ -413,7 +414,7 @@ export default function Home() {
                                     <div className="flex gap-8 animate-infinite-scroll pl-6">
                                         {[...myPhotos, ...myPhotos].map((src, index) => (
                                             <div key={index} className="relative w-64 h-80 flex-shrink-0 rounded-[2.5rem] overflow-hidden shadow-[0_0_0_4px_rgba(255,255,255,0.15),_0_0_20px_rgba(253,224,71,0.2),_0_15px_30px_rgba(0,0,0,0.3)] transform transition-all hover:scale-105 duration-500">
-                                                <img src={src} alt={`Profile ${index}`} className="w-full h-full object-cover" />
+                                                <Image src={src} alt={`Profile ${index}`} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
                                             </div>
                                         ))}
                                     </div>
@@ -488,20 +489,20 @@ export default function Home() {
                                         <div className="mt-8 text-center w-full max-w-4xl mx-auto space-y-12">
 
                                             <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed">
-                                                "Before I entered this college, I think I was a{' '}
-                                                <span className="relative inline-block cursor-pointer text-[#E00A5F] font-bold hover:scale-110 transition-transform duration-200" onMouseEnter={() => playAudio('kid', 0.6)}>kid</span>."
+                                                &quot;Before I entered this college, I think I was a{' '}
+                                                <span className="relative inline-block cursor-pointer text-[#E00A5F] font-bold hover:scale-110 transition-transform duration-200" onMouseEnter={() => playAudio('kid', 0.6)}>kid</span>.&quot;
                                             </p>
                                             <p className="text-3xl md:text-4xl text-gray-600 font-cinzel leading-relaxed">
-                                                "I did not talk to girls and <span className="italic text-gray-400">here is no girls</span> to talk."
+                                                &quot;I did not talk to girls and <span className="italic text-gray-400">here is no girls</span> to talk.&quot;
                                             </p>
                                             <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed">
-                                                "Oh, I just forgot to tell you about <span className="text-[#E00A5F] font-bold">society girls</span>."
+                                                &quot;Oh, I just forgot to tell you about <span className="text-[#E00A5F] font-bold">society girls</span>.&quot;
                                             </p>
 
                                             {/* Photos Interaction */}
                                             <div className="flex flex-col items-center gap-8 pt-8 pb-8 border-b-4 border-gray-200 w-full">
                                                 <p className="text-2xl md:text-3xl text-gray-800 font-cinzel font-bold">
-                                                    "Here are some of the most beautiful girls..."
+                                                    &quot;Here are some of the most beautiful girls...&quot;
                                                 </p>
 
                                                 <div className="relative flex flex-col items-center w-full max-w-2xl mt-4">
@@ -524,7 +525,7 @@ export default function Home() {
                                                                 <div className="flex justify-center gap-4 md:gap-8 animate-zoom-in">
                                                                     {societyGirls.map((img, index) => (
                                                                         <div key={index} className="relative w-28 h-28 md:w-40 md:h-40 rounded-2xl overflow-hidden border-4 border-white shadow-lg transition-all duration-500 hover:scale-110 hover:z-10 hover:rotate-3">
-                                                                            <img src={img} alt="Girl" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = "https://placehold.co/400x400/E00A5F/white?text=Img+Err"; }} />
+                                                                            <Image src={img} alt="Girl" fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" onError={(e) => { const target = e.target as HTMLImageElement; target.src = "https://placehold.co/400x400/E00A5F/white?text=Img+Err"; }} />
                                                                         </div>
                                                                     ))}
                                                                 </div>
@@ -535,29 +536,29 @@ export default function Home() {
                                             </div>
 
                                             <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed pt-4">
-                                                "I know these are beautiful, so once I decided to talk to one of them but suddenly senior{' '}
-                                                <span className="inline-block cursor-help text-red-600 font-bold underline decoration-red-300 hover:animate-shake hover:text-red-700 transition-colors" onMouseEnter={() => playAudio('senior', 0.8)}>calls</span>."
+                                                &quot;I know these are beautiful, so once I decided to talk to one of them but suddenly senior{' '}
+                                                <span className="inline-block cursor-help text-red-600 font-bold underline decoration-red-300 hover:animate-shake hover:text-red-700 transition-colors" onMouseEnter={() => playAudio('senior', 0.8)}>calls</span>.&quot;
                                             </p>
 
                                             <div className="pt-4">
                                                 <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed flex flex-col md:flex-row items-center justify-center gap-4 flex-wrap">
-                                                    <span>"Then I found instagram (in love its insta) my second"</span>
+                                                    <span>&quot;Then I found instagram (in love its insta) my second&quot;</span>
                                                     <span onClick={triggerCrushExplosion} className="relative cursor-pointer inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-pink-500 via-rose-400 to-[#FDE047] text-white font-bold tracking-wider uppercase shadow-[0_4px_15px_rgba(236,72,153,0.4)] border-2 border-white/50 hover:scale-110 hover:-rotate-2 hover:shadow-[0_0_30px_rgba(253,224,71,0.6)] active:scale-95 transition-all duration-300 ease-out group">
                                                         <span>Crush</span><span className="text-xl group-hover:animate-bounce">💖</span>
                                                     </span>
                                                 </p>
                                             </div>
 
-                                            <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed animate-fade-in-up">"After some months I spend hours with insta we have a <span className="text-[#E00A5F] font-bold">great bonding</span>."</p>
-                                            <p className="text-3xl md:text-4xl text-gray-600 font-cinzel leading-relaxed">"I keep watching her."</p>
-                                            <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed italic border-l-[6px] border-[#FDE047] pl-8 py-4 bg-yellow-50/50 rounded-r-2xl shadow-sm">"Oh can't scroll without me, this is genuine problem every girl face."</p>
+                                            <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed animate-fade-in-up">&quot;After some months I spend hours with insta we have a <span className="text-[#E00A5F] font-bold">great bonding</span>.&quot;</p>
+                                            <p className="text-3xl md:text-4xl text-gray-600 font-cinzel leading-relaxed">&quot;I keep watching her.&quot;</p>
+                                            <p className="text-3xl md:text-4xl text-gray-700 font-cinzel leading-relaxed italic border-l-[6px] border-[#FDE047] pl-8 py-4 bg-yellow-50/50 rounded-r-2xl shadow-sm">&quot;Oh can&#39;t scroll without me, this is genuine problem every girl face.&quot;</p>
 
                                             {/* HEART LOCKET */}
                                             <div className="py-20 flex justify-center w-full min-h-[300px]">
                                                 <div className="relative w-64 h-64 flex items-center justify-center cursor-pointer" onClick={handleHeartBoxClick}>
                                                     <div className={`absolute inset-0 flex items-center justify-center transition-all duration-700 ${isHeartBroken ? 'zoom-reveal' : 'opacity-0 scale-0'}`}>
-                                                        <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-[#FDE047] shadow-[0_0_50px_rgba(253,224,71,0.8)] bg-white z-10">
-                                                            <img src="/girls/3.jpg" alt="Reveal" className="w-full h-full object-cover" />
+                                                        <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-[#FDE047] shadow-[0_0_50px_rgba(253,224,71,0.8)] bg-white z-10">
+                                                            <Image src="/girls/3.jpg" alt="Reveal" fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
                                                         </div>
                                                     </div>
                                                     <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_10px_20px_rgba(224,10,95,0.6)] overflow-visible">
@@ -582,12 +583,12 @@ export default function Home() {
 
                                                     <div className="bg-gradient-to-r from-pink-50 to-yellow-50 px-8 py-4 rounded-full border border-pink-100 shadow-sm">
                                                         <p className="text-xl text-[#E00A5F] font-cinzel font-medium text-center">
-                                                            "Oh you look interested in me, lets find if our chemistry works"
+                                                            &quot;Oh you look interested in me, lets find if our chemistry works&quot;
                                                         </p>
                                                     </div>
 
                                                     <h3 className="text-3xl md:text-5xl text-gray-800 font-cinzel font-bold text-center leading-tight drop-shadow-sm">
-                                                        "Do you believe in <br /> <span className="text-[#E00A5F]">love at first sight?</span>"
+                                                        &quot;Do you believe in <br /> <span className="text-[#E00A5F]">love at first sight?</span>&quot;
                                                     </h3>
 
                                                     {/* Choice Buttons */}
